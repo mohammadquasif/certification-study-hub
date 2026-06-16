@@ -1077,6 +1077,16 @@ function renderQuestion() {
     </button>`;
   }).join('');
 
+  let explHtml = '';
+  if (isAnswered) {
+    const isCorrect = q.correct.length === savedAns.length && q.correct.every(c => savedAns.includes(c));
+    const icon = isCorrect ? '✅' : '❌';
+    const label = isCorrect ? 'Correct!' : 'Incorrect';
+    explHtml = `<div class="explanation-box" id="exp-box" style="display:block">
+      <strong>${icon} ${label}</strong> — ${q.exp}
+    </div>`;
+  }
+
   card.innerHTML = `
     <div class="q-meta">
       <span class="q-num">Q ${current+1} / ${QUESTIONS.length} &nbsp;·&nbsp; ${q.domain}</span>
@@ -1085,9 +1095,7 @@ function renderQuestion() {
     <div class="q-text">${q.q}</div>
     ${q.multi ? '<div style="font-size:0.8rem;color:var(--accent2);margin-bottom:1rem;">⚠️ Select TWO correct answers</div>' : ''}
     <div class="options-grid">${optionsHTML}</div>
-    <div class="explanation-box" id="exp-box" style="${isAnswered ? 'display:block' : 'display:none'}">
-      <strong>Explanation:</strong> ${q.exp}
-    </div>
+    ${explHtml}
   `;
 
   // Update next/submit button
