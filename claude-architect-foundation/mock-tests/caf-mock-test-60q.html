@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Architect Foundation — 60Q Mock Test | Certification Study Hub</title>
+  <meta name="description" content="60-question interactive mock test for the Claude Architect Foundation certificate. Covers Claude fundamentals, agentic patterns, tool use, MCP, structured extraction, and Claude Code workflows." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06070f;
+      --surface: #0d0f1f;
+      --card: #141628;
+      --border: #1e2045;
+      --accent: #8b5cf6;
+      --accent2: #6366f1;
+      --accent-glow: rgba(139,92,246,0.15);
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #facc15;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --radius: 14px;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ───── HEADER ───── */
+    header {
+      background: linear-gradient(135deg, #080a1a 0%, #141628 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .logo { display:flex; align-items:center; gap:10px; }
+    .logo-icon { font-size:1.6rem; }
+    .logo-text { font-size:1.1rem; font-weight:700; color:var(--text); }
+    .logo-text span { color:var(--accent); }
+
+    /* ───── TIMER BAR ───── */
+    #timer-bar {
+      display:flex; align-items:center; gap:8px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius:50px;
+      padding: 6px 16px;
+    }
+    #timer-icon { font-size:1.1rem; }
+    #timer-display {
+      font-size:1.1rem;
+      font-weight:700;
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      transition: color 0.3s;
+    }
+    #timer-display.warning { color: var(--yellow); }
+    #timer-display.danger { color: var(--red); animation: pulse 1s infinite; }
+
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+
+    /* ───── PROGRESS BAR ───── */
+    #progress-container {
+      padding: 12px 2rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    #progress-header {
+      display:flex; justify-content:space-between;
+      font-size:0.82rem; color:var(--muted);
+      margin-bottom:6px;
+    }
+    #progress-track {
+      height:6px;
+      background: var(--border);
+      border-radius:10px;
+      overflow:hidden;
+    }
+    #progress-fill {
+      height:100%;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      border-radius:10px;
+      transition: width 0.4s ease;
+    }
+
+    /* ───── MAIN LAYOUT ───── */
+    #app {
+      max-width: 860px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* ───── START SCREEN ───── */
+    #start-screen {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .start-badge {
+      display: inline-block;
+      background: var(--accent-glow);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 50px;
+      padding: 6px 18px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.5rem;
+    }
+    .start-title {
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #c4b5fd, #8b5cf6, #6366f1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .start-subtitle {
+      color: var(--muted);
+      font-size: 1.1rem;
+      margin-bottom: 2.5rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      max-width: 700px;
+      margin: 0 auto 2.5rem;
+    }
+    .info-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1rem;
+    }
+    .info-card .value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent);
+      display: block;
+    }
+    .info-card .label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 4px;
+      display: block;
+    }
+    .domain-list {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      max-width: 580px;
+      margin: 0 auto 2.5rem;
+      text-align: left;
+    }
+    .domain-list h3 {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+    .domain-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .domain-item:last-child { border-bottom: none; }
+    .domain-pct {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+    .btn-start {
+      background: linear-gradient(135deg, #7c3aed, #6366f1);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 16px 48px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 0 30px rgba(139,92,246,0.4);
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-start:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px rgba(139,92,246,0.6);
+    }
+
+    /* ───── QUESTION CARD ───── */
+    .q-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      animation: fadeSlide 0.3s ease;
+    }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .q-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.2rem;
+    }
+    .q-num {
+      background: var(--accent-glow);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .q-domain {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 0.75rem;
+    }
+    .q-multi-badge {
+      background: rgba(250,204,21,0.1);
+      border: 1px solid var(--yellow);
+      color: var(--yellow);
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .q-text {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+    .q-scenario {
+      background: var(--surface);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: #a5b4fc;
+    }
+    .options { display: flex; flex-direction: column; gap: 0.75rem; }
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 1.2rem;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.18s;
+      text-align: left;
+    }
+    .option:hover:not(.disabled) {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+    .option.selected {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+    .option.correct {
+      border-color: var(--green);
+      background: rgba(34,197,94,0.1);
+    }
+    .option.incorrect {
+      border-color: var(--red);
+      background: rgba(239,68,68,0.1);
+    }
+    .option.disabled { cursor: default; }
+    .opt-letter {
+      min-width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      transition: all 0.18s;
+      margin-top: 1px;
+    }
+    .option.selected .opt-letter { border-color: var(--accent); color: var(--accent); }
+    .option.correct .opt-letter { border-color: var(--green); color: var(--green); background: rgba(34,197,94,0.15); }
+    .option.incorrect .opt-letter { border-color: var(--red); color: var(--red); background: rgba(239,68,68,0.15); }
+    .opt-text { font-size: 0.95rem; line-height: 1.5; color: var(--text); }
+
+    /* ───── EXPLANATION ───── */
+    .explanation {
+      margin-top: 1.2rem;
+      padding: 1rem 1.2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #a5b4fc;
+      display: none;
+    }
+    .explanation.show { display: block; animation: fadeSlide 0.2s ease; }
+    .explanation strong { color: var(--accent); }
+
+    /* ───── NAVIGATION ───── */
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+      gap: 1rem;
+    }
+    .btn {
+      border: none;
+      border-radius: 50px;
+      padding: 12px 28px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed, #6366f1);
+      color: white;
+    }
+    .btn-primary:hover { transform: translateY(-1px); opacity: 0.92; }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+    .btn-submit-all {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: white;
+    }
+    .btn-submit-all:hover { transform: translateY(-1px); opacity: 0.92; }
+
+    /* ───── QUESTION NAV GRID ───── */
+    #q-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+      margin-bottom: 1.5rem;
+    }
+    .q-nav-btn {
+      aspect-ratio: 1;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .q-nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .q-nav-btn.answered { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
+    .q-nav-btn.current { background: var(--accent); color: white; border-color: var(--accent); }
+    .q-nav-btn.graded-right { background: rgba(34,197,94,0.2); border-color: var(--green); color: var(--green); }
+    .q-nav-btn.graded-wrong { background: rgba(239,68,68,0.2); border-color: var(--red); color: var(--red); }
+
+    /* ───── RESULTS SCREEN ───── */
+    #results-screen { display: none; }
+    .results-hero {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 1.5rem;
+    }
+    .score-ring {
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 1.5rem;
+      position: relative;
+    }
+    .score-ring svg { transform: rotate(-90deg); }
+    .score-ring circle {
+      fill: none;
+      stroke-width: 12;
+    }
+    .score-ring .track { stroke: var(--border); }
+    .score-ring .fill { stroke: var(--accent); transition: stroke-dashoffset 1s ease; }
+    .score-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .score-pct { font-size: 2rem; font-weight: 800; color: var(--accent); }
+    .score-label { font-size: 0.75rem; color: var(--muted); }
+    .results-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .results-sub { color: var(--muted); font-size: 1rem; }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .stat-val { font-size: 1.6rem; font-weight: 800; display: block; }
+    .stat-lbl { font-size: 0.75rem; color: var(--muted); }
+    .stat-correct { color: var(--green); }
+    .stat-incorrect { color: var(--red); }
+    .stat-skipped { color: var(--yellow); }
+    .domain-results {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .domain-results h3 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .domain-row {
+      margin-bottom: 1rem;
+    }
+    .domain-row-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      margin-bottom: 4px;
+    }
+    .domain-bar-track {
+      height: 8px;
+      background: var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .domain-bar-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.8s ease;
+    }
+    .review-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .review-section h3 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .review-item {
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .review-item:last-child { border-bottom: none; }
+    .review-q { font-size: 0.9rem; line-height: 1.5; margin-bottom: 0.5rem; }
+    .review-answers { font-size: 0.82rem; }
+    .review-your { color: var(--red); }
+    .review-correct { color: var(--green); }
+    .review-explain { color: var(--muted); margin-top: 0.4rem; font-style: italic; }
+    .btn-retake {
+      background: linear-gradient(135deg, #7c3aed, #6366f1);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 40px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      margin-right: 1rem;
+    }
+    .btn-retake:hover { transform: translateY(-2px); opacity: 0.92; }
+
+    /* ───── RESPONSIVE ───── */
+    @media(max-width:600px) {
+      .start-title { font-size: 2rem; }
+      header { padding: 0 1rem; }
+      #app { padding: 0 0.5rem; margin: 1rem auto; }
+      #q-nav-grid { grid-template-columns: repeat(10,1fr); gap:4px; }
+      .nav-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-icon">🤖</span>
+    <span class="logo-text">Certification <span>Study Hub</span></span>
+  </div>
+  <div id="timer-bar" style="display:none">
+    <span id="timer-icon">⏱️</span>
+    <span id="timer-display">60:00</span>
+  </div>
+</header>
+
+<div id="progress-container" style="display:none">
+  <div id="progress-header">
+    <span id="progress-label">Question 1 of 60</span>
+    <span id="progress-pct">0% answered</span>
+  </div>
+  <div id="progress-track"><div id="progress-fill" style="width:0%"></div></div>
+</div>
+
+<div id="app">
+
+  <!-- START SCREEN -->
+  <div id="start-screen">
+    <div class="start-badge">🎓 CLAUDE ARCHITECT FOUNDATION</div>
+    <h1 class="start-title">60-Question Mock Test</h1>
+    <p class="start-subtitle">Original scenario-based questions covering all 5 exam domains. 60-minute timed examination.</p>
+
+    <div class="info-grid">
+      <div class="info-card"><span class="value">60</span><span class="label">Questions</span></div>
+      <div class="info-card"><span class="value">60</span><span class="label">Minutes</span></div>
+      <div class="info-card"><span class="value">70%</span><span class="label">Pass Threshold</span></div>
+      <div class="info-card"><span class="value">5</span><span class="label">Domains</span></div>
+    </div>
+
+    <div class="domain-list">
+      <h3>Exam Domains</h3>
+      <div class="domain-item"><span>01 — Claude Fundamentals & Architecture</span><span class="domain-pct">~15%</span></div>
+      <div class="domain-item"><span>02 — Agentic Patterns & Multi-Agent Systems</span><span class="domain-pct">~25%</span></div>
+      <div class="domain-item"><span>03 — Tool Use & MCP Design</span><span class="domain-pct">~25%</span></div>
+      <div class="domain-item"><span>04 — Structured Output & Extraction</span><span class="domain-pct">~20%</span></div>
+      <div class="domain-item"><span>05 — Claude Code & Developer Workflows</span><span class="domain-pct">~15%</span></div>
+    </div>
+
+    <button class="btn-start" onclick="startTest()">🚀 Start Mock Test</button>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quiz-screen" style="display:none">
+    <div id="q-nav-grid"></div>
+    <div id="question-area"></div>
+    <div class="nav-row">
+      <button class="btn btn-secondary" id="btn-prev" onclick="navigate(-1)">← Previous</button>
+      <button class="btn btn-submit-all" onclick="submitAll()">Submit Test ✓</button>
+      <button class="btn btn-primary" id="btn-next" onclick="navigate(1)">Next →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="results-screen"></div>
+
+</div>
+
+<script>
+const TOTAL_MINUTES = 60;
+
+const QUESTIONS = [
+  // ─── DOMAIN 1: CLAUDE FUNDAMENTALS (Q1-Q9) ───
+  {
+    d: "Claude Fundamentals",
+    q: "A company deploys a Claude-powered assistant for financial advice. Compliance reviewers are concerned that the assistant may give confident but incorrect answers about tax regulations, potentially causing customers to file incorrectly. Which Claude design principle most directly mitigates this risk?",
+    o: ["A) Helpfulness — Claude is designed to be genuinely useful even when uncertain", "B) Constitutional AI — Claude's training constitution prohibits all financial advice", "C) Honesty — Claude is trained to acknowledge uncertainty rather than provide false confidence, reducing the risk of authoritative-sounding but incorrect advice", "D) Harmlessness — Claude avoids all topics that could lead to financial harm"],
+    a: 2,
+    e: "Honesty is the principle that directly addresses false confidence. Claude is trained to express genuine uncertainty rather than fabricate confident-sounding answers. This reduces (though doesn't eliminate) the risk of authoritative-sounding but incorrect guidance."
+  },
+  {
+    d: "Claude Fundamentals",
+    q: "A developer's support chatbot 'forgets' customer names and order numbers after 3–4 message exchanges, even though customers provided them early in the conversation. What is the most likely root cause?",
+    o: ["A) Claude's context window is too small to hold customer details past 3 exchanges", "B) The application is not including prior conversation turns when making each subsequent API request — Claude is stateless and only knows what is sent with each call", "C) Customer names and order numbers are not retained in Claude's in-weights memory", "D) The system prompt is overwriting user-provided information each turn"],
+    a: 1,
+    e: "Claude is stateless by design — it has no memory between API calls unless the application explicitly sends prior conversation history with each request. The developer's application is not appending earlier turns to the API call, so Claude starts fresh each time with no knowledge of what was said before."
+  },
+  {
+    d: "Claude Fundamentals",
+    q: "An extraction pipeline processes 192,000-token research documents. The tool schema is 4,000 tokens and the system prompt is 1,800 tokens. Claude's context window is 200,000 tokens. Extraction accuracy on fields appearing in the final 10% of documents is only 61%. What is the most likely cause?",
+    o: ["A) The tool schema contains too many fields for documents this size", "B) The combined total (197,800 tokens) is close to the context limit, leaving very little effective headroom; content in the final sections receives degraded attention", "C) The system prompt instructions override the tool schema for large documents", "D) Documents above 190,000 tokens require the Message Batches API"],
+    a: 1,
+    e: "The combined size (192,000 + 4,000 + 1,800 = 197,800 tokens) is very close to the 200,000-token context limit. When the context window is nearly full, the model's effective attention to content near the end of the document degrades significantly — explaining the 61% accuracy on the final 10% of documents."
+  },
+  {
+    d: "Claude Fundamentals",
+    q: "Anthropic's Constitutional AI training method is designed to address a specific limitation of standard RLHF (Reinforcement Learning from Human Feedback). What is that limitation?",
+    o: ["A) RLHF requires too much labelled data", "B) Human raters may inadvertently reward confident-sounding but inaccurate responses over honest uncertain ones, since confidence feels more useful than acknowledged uncertainty", "C) RLHF cannot be used for language models above a certain size", "D) Human raters are too slow for large-scale training"],
+    a: 1,
+    e: "Standard RLHF relies on humans rating responses. Humans can inadvertently prefer responses that sound confident and helpful — even if incorrect — over responses that honestly acknowledge uncertainty. Constitutional AI adds a self-evaluation step where Claude critiques its own outputs against a set of principles before human feedback is incorporated, improving honesty without relying solely on human preferences."
+  },
+  {
+    d: "Claude Fundamentals",
+    q: "A developer asks Claude to always produce exactly the same output for the same input (deterministic behaviour) for audit compliance. A colleague suggests setting temperature to 0 and using Claude directly as the compliance audit engine. What is the main concern with this approach?",
+    o: ["A) Claude cannot operate at temperature 0", "B) Temperature 0 produces infinite loops", "C) Claude is a probabilistic model; even at temperature 0, absolute determinism across all cases and versions cannot be guaranteed — purpose-built deterministic systems are more appropriate for compliance engines requiring guaranteed identical outputs", "D) Claude's output is too verbose for compliance audit logs"],
+    a: 2,
+    e: "Claude is a probabilistic language model. While temperature 0 reduces variability significantly, it does not guarantee absolute determinism across all inputs, model updates, or infrastructure changes. For compliance engines that require guaranteed identical outputs (e.g., tax calculations, compliance rule checks), purpose-built deterministic systems are more appropriate. Claude can assist with analysis and explanation around compliance but should not be the engine itself."
+  },
+  {
+    d: "Claude Fundamentals",
+    q: "Which statement correctly describes how external memory differs from in-context memory in Claude-based systems?",
+    o: ["A) External memory is stored in Claude's model weights during fine-tuning", "B) External memory resides in databases or files outside Claude, is retrieved via tool calls when needed, and persists across sessions — unlike in-context memory which exists only for the current request", "C) External memory is provided by Anthropic as a premium feature", "D) External memory automatically replaces in-context memory when the context window is full"],
+    a: 1,
+    e: "External memory is data stored outside the Claude model — in databases, files, vector stores, or other persistent storage. The application retrieves relevant information using tool calls and injects it into the context window when needed. This persists across sessions, unlike in-context memory which only lasts for the current API request."
+  },
+  {
+    d: "Claude Fundamentals",
+    q: "A startup uses Claude to autonomously approve or reject all job applications with no human review, arguing it is 'accurate enough at 87%.' What is the primary responsible deployment concern?",
+    o: ["A) Claude's context window is insufficient to read full CVs", "B) An 87% accuracy rate means 13% of applicants are affected by errors; automated decisions affecting employment require human oversight — especially given legal requirements around non-discrimination and the irreversible impact on applicants", "C) Claude refuses to evaluate human characteristics", "D) The startup should use a dedicated HR model instead of Claude"],
+    a: 1,
+    e: "Automated employment decisions are high-stakes and legally regulated. A 13% error rate in this context means a significant number of applicants are incorrectly accepted or rejected — with real consequences for their careers. Responsible deployment requires human oversight for high-stakes decisions affecting individuals' livelihoods."
+  },
+  {
+    d: "Claude Fundamentals",
+    q: "What is the relationship between Anthropic and Amazon regarding Claude?",
+    o: ["A) Amazon created Claude and Anthropic distributes it", "B) Anthropic created Claude; Claude is available through Amazon Bedrock as a third-party service but remains Anthropic's product", "C) Claude and Bedrock are co-developed products built jointly by Anthropic and Amazon", "D) Amazon provides the compute infrastructure; Anthropic develops the training algorithms"],
+    a: 1,
+    e: "Anthropic created Claude. Amazon Bedrock is a managed AI service that makes Claude (among other models) available to AWS customers. Claude's development, training methodology (including Constitutional AI), and safety principles are entirely Anthropic's work."
+  },
+  {
+    d: "Claude Fundamentals",
+    q: "A system prompt instructs Claude: 'You are a helpful assistant. Do not discuss competitor products.' A user asks Claude which AI models are best for image generation. How does Claude typically handle this instruction?",
+    o: ["A) Claude ignores system prompt constraints and answers the question fully", "B) Claude treats the system prompt as a strict constraint and declines to answer, explaining it cannot discuss competitor products", "C) Claude answers based on its own judgment regardless of the system prompt", "D) Claude asks the user to rephrase the question to avoid mentioning competitors"],
+    a: 1,
+    e: "System prompts are treated as operator-level instructions. Claude respects these constraints as part of its deployment configuration. When a user's request falls outside the permitted scope defined by the operator, Claude typically declines and may explain the limitation. This is the intended behaviour — operators configure Claude's scope for their specific use case."
+  },
+
+  // ─── DOMAIN 2: AGENTIC PATTERNS (Q10-Q24) ───
+  {
+    d: "Agentic Patterns",
+    q: "An invoice processing agent calls `extract_invoice_data()` and receives structured data including a total amount of ₹1,85,000. The system policy allows autonomous payment initiation up to ₹50,000. What should the agent do next?",
+    o: ["A) Initiate the payment — the extraction succeeded so the agent should complete the workflow", "B) Call `verify_invoice_details()` first to double-check the amount", "C) Compile a structured handoff with invoice details, extracted amount, policy limit, and recommended next step, then escalate to a human approver", "D) Return an error stating the invoice amount is too high to process"],
+    a: 2,
+    e: "The extracted amount (₹1,85,000) exceeds the autonomous approval limit (₹50,000). The agent should not attempt to process the payment. The correct response is a structured escalation — including the invoice data, extracted amount, applicable policy, and the recommended action — so the human approver can review and authorise."
+  },
+  {
+    d: "Agentic Patterns",
+    q: "A marketing team needs to create 200 localised variants of a campaign: each variant requires translating base copy, adapting cultural references, and checking brand compliance. Which agentic pattern best supports this at scale?",
+    o: ["A) Single agent in a loop — the same agent processes all 200 variants sequentially", "B) Orchestrator-workers — the orchestrator assigns each variant to a worker subagent; workers run in parallel, each handling one variant independently", "C) Prompt chaining — a three-step chain processes all 200 variants one at a time", "D) Routing — classify each variant's language and route to the appropriate translation model"],
+    a: 1,
+    e: "200 independent variants that each require the same three-step processing (translate, adapt, check) are a perfect match for the orchestrator-workers pattern with parallelisation. Each worker handles one variant independently. Running in parallel reduces total time dramatically compared to a sequential chain."
+  },
+  {
+    d: "Agentic Patterns",
+    q: "A support agent's conversation reaches 52 turns covering 4 separate customer issues. When asked to recap Issue #1 from Turn 3, the agent provides an incorrect summary. What is the most likely cause?",
+    o: ["A) Claude cannot recall information from more than 50 turns ago", "B) The conversation's cumulative size is approaching the context window limit; content from early turns receives less effective attention as the window fills", "C) The agent's system prompt instructions overrode the early conversation data", "D) Support conversations should never exceed 40 turns"],
+    a: 1,
+    e: "As a long conversation fills the context window, the model's effective attention to content from early turns degrades. This is context pressure — not a hard limit, but a gradual degradation in how well the model processes information that appeared long ago relative to the current position in the context."
+  },
+  {
+    d: "Agentic Patterns",
+    q: "A content pipeline has two types of inputs: English articles that need SEO optimisation only, and non-English articles that need translation THEN SEO optimisation. Which pattern combination is most appropriate?",
+    o: ["A) Orchestrator-workers — route all articles to worker A (translation) and worker B (SEO) in parallel", "B) Routing to identify language, then prompt chaining with a conditional first step (skip translation for English articles)", "C) Single prompt that handles both translation and SEO for all articles", "D) Two completely separate pipelines — one for English, one for non-English"],
+    a: 1,
+    e: "This is a routing + conditional chaining combination. The router first classifies by language. English articles skip to the SEO step. Non-English articles go through translate → SEO. The two-step chain for non-English articles is a classic prompt chain."
+  },
+  {
+    d: "Agentic Patterns",
+    q: "A developer spent 3 hours building context about a complex data pipeline. A colleague merged a PR that changed the data schema while the session was paused overnight. The developer resumes with `--continue`. What critical step must happen before continuing work?",
+    o: ["A) Nothing — Claude will detect the schema changes through file exploration", "B) Restart the session completely since prior context is now invalid", "C) Brief Claude on the schema changes that occurred during the pause, as its knowledge is a snapshot from when the session was paused and it has no awareness of overnight changes", "D) Run the test suite to show Claude what changed"],
+    a: 2,
+    e: "When resuming a paused session, Claude's knowledge is a snapshot from the pause time. It has no automatic awareness of changes that occurred during the pause. The developer must explicitly brief Claude on the schema changes before continuing — otherwise Claude will make incorrect references based on the old schema."
+  },
+  {
+    d: "Agentic Patterns",
+    q: "An orchestrator delegates a security audit subtask to Worker Agent A and a performance audit subtask to Worker Agent B, running simultaneously. Worker A's security findings include a critical authentication flaw. Should Worker A share this finding with Worker B before Worker B completes its performance audit?",
+    o: ["A) Yes — Worker B should know about the security flaw as it may affect its performance analysis", "B) No — Worker B operates in an isolated context and should not receive Worker A's findings during analysis; the orchestrator synthesises all results after both workers complete", "C) Yes — workers should always communicate in real time for better analysis quality", "D) No — but only because sharing findings would violate the Batch API's constraints"],
+    a: 1,
+    e: "Context isolation is a core feature of the orchestrator-workers pattern. Workers should not share intermediate findings — each operates in an isolated context focused solely on its specific task. The orchestrator is responsible for synthesising all worker results into a final output. Cross-worker communication during analysis introduces contamination and defeats the purpose of isolated analysis."
+  },
+  {
+    d: "Agentic Patterns",
+    q: "What is the primary purpose of a gate placed between two steps in a prompt chain?",
+    o: ["A) To reduce token costs by terminating chains that exceed a budget", "B) To serve as a validation or review checkpoint — verifying that the previous step's output meets quality, compliance, or other criteria before allowing execution to proceed to the next step", "C) To route chain outputs to different downstream systems", "D) To add parallelism by running the next step in advance while the gate evaluates"],
+    a: 1,
+    e: "A gate between chain steps is a checkpoint that blocks execution of the next step unless the current step's output meets defined criteria. Common gate types include: quality checks (did the output meet specifications?), compliance checks (does it meet policy requirements?), and human approval gates (does a human need to review before proceeding?)."
+  },
+  {
+    d: "Agentic Patterns",
+    q: "After spending 90 minutes analysing two different approaches to refactoring a legacy payment module, a developer wants to deeply explore the code implications of each approach independently. What is the most effective strategy?",
+    o: ["A) Continue in the same session — explore Approach A, then continue to explore Approach B in the same thread", "B) Start two fresh sessions with manually-typed summaries of the 90-minute analysis", "C) Fork the session at the current checkpoint; explore Approach A's code implications in Branch A and Approach B's in Branch B independently, then compare the findings", "D) Have Claude rank the two approaches and only explore the top-ranked one in detail"],
+    a: 2,
+    e: "Session forking preserves the full 90-minute analysis in both branches while preventing Approach A's code exploration from contaminating Approach B's analysis. Each branch starts from the same knowledge base and explores its approach in complete isolation. Starting fresh (B) loses the 90 minutes of context."
+  },
+  {
+    d: "Agentic Patterns",
+    q: "A structured escalation handoff from a support agent to a human representative should include which set of elements?",
+    o: ["A) Only the full raw conversation transcript", "B) Customer name and account number only", "C) A synthesised summary including: the customer's core need, actions the agent took, findings or data discovered, why the agent is escalating, and the recommended next step for the human representative", "D) A list of all tool calls made during the session"],
+    a: 2,
+    e: "An effective escalation handoff is not just a transcript dump. The human representative needs a synthesised, actionable brief: what the customer needs, what the agent did, what was discovered, why the agent couldn't complete it, and what should happen next. This allows the human to immediately help the customer without re-reading the entire conversation."
+  },
+  {
+    d: "Agentic Patterns",
+    q: "An agent is given the goal: 'Book a meeting room for the Q3 planning session.' The agent calls `get_available_rooms()`, receives a list, selects a room, and is about to call `confirm_booking()`. Before calling `confirm_booking()`, what should the agent do?",
+    o: ["A) Proceed with booking immediately — the goal was clear and the agent has chosen the best available room", "B) Present the selected room details (name, capacity, date, time) to the user and request explicit confirmation before executing the irreversible booking action", "C) Call `check_room_reviews()` first to ensure the selected room has good ratings", "D) Send a calendar invitation before confirming the room booking"],
+    a: 1,
+    e: "Booking a meeting room is an action with real-world consequences (blocking the room for others, creating calendar entries). Before executing a consequential and potentially irreversible action, the agent should present the specific details to the user and request confirmation. This is the human-in-the-loop pattern for the final action step."
+  },
+  {
+    d: "Agentic Patterns",
+    q: "A customer explicitly says: 'I'm frustrated. I want to speak to a real person.' The support agent has not fully resolved the customer's issue. What should the agent do?",
+    o: ["A) Continue attempting resolution — the agent is close to solving the issue", "B) Ask the customer to confirm their request to speak to a human", "C) Immediately compile a structured handoff and escalate to a human representative — explicit requests for a human are a mandatory escalation trigger", "D) Tell the customer that a human will follow up via email within 24 hours"],
+    a: 2,
+    e: "Explicit customer requests to speak to a human are a mandatory, non-negotiable escalation trigger. No matter how close the agent is to resolution, it must honour this request immediately. The correct response is to acknowledge the request and execute a structured escalation with a handoff summary."
+  },
+  {
+    d: "Agentic Patterns",
+    q: "Why is the sliding window approach to context management potentially more harmful than summarisation for long agentic sessions?",
+    o: ["A) Sliding windows cost more tokens than summarisation", "B) Sliding windows silently discard earlier turns without any record of their content — if those turns contained critical decisions, IDs, or commitments, that information is permanently lost from the agent's working context", "C) Sliding windows only work for conversations under 50 turns", "D) Summarisation produces more tokens than a sliding window"],
+    a: 1,
+    e: "Sliding windows automatically drop turns beyond the configured window size. The problem is that earlier turns may contain critical information (customer order IDs, policy decisions, confirmed facts) that the agent needs later. Unlike summarisation — which condenses and preserves key facts — a sliding window silently discards everything beyond its boundary with no preservation of key information."
+  },
+  {
+    d: "Agentic Patterns",
+    q: "An agent must perform the same three tasks for every document: (1) extract entities, (2) classify sentiment, (3) generate a summary. The steps always happen in this fixed order, and each step's output is required by the next step. Which pattern is most appropriate?",
+    o: ["A) Orchestrator-workers — three parallel workers for entities, sentiment, and summary", "B) Routing — classify document type and route to the appropriate extraction specialist", "C) Prompt chaining — three sequential steps where each uses the previous step's output", "D) Single comprehensive prompt handling all three tasks simultaneously"],
+    a: 2,
+    e: "This is a textbook prompt chain: fixed sequence, same steps every time, each step requires the prior step's output. Orchestrator-workers would add unnecessary overhead (parallelism doesn't help when steps are dependent). A single prompt would conflate three distinct tasks. The prompt chain is the right pattern."
+  },
+  {
+    d: "Agentic Patterns",
+    q: "A researcher uses Claude Code for a 2-hour deep investigation of a machine learning codebase. Mid-investigation, they must switch to another urgent task and want to preserve their progress. What is the most effective way to pause and resume later?",
+    o: ["A) Copy-paste all conversation context into a text file for manual re-input later", "B) Save a summary of findings in a note and start fresh when returning", "C) Name and save the current session; when ready to resume, use `--resume [session-name]` and briefly update Claude on any changes that occurred during the pause", "D) Use the `--continue` flag before any changes are made to the session"],
+    a: 2,
+    e: "Named sessions can be resumed with `--resume [session-name]`. This preserves the full 2-hour investigation context. When resuming, the researcher should brief Claude on any changes that occurred (new commits, file changes, colleague updates) since the session's knowledge is a snapshot from when it was paused."
+  },
+  {
+    d: "Agentic Patterns",
+    q: "Which scenario best illustrates the 'Observe → Think → Act → Observe' agentic loop?",
+    o: ["A) A user sends a message and Claude generates a single comprehensive response", "B) Claude calls an API, receives a status code 200, assumes success, and generates a final answer", "C) Claude calls `get_inventory(product_id)`, receives a stock count of 0, reasons that the product is out of stock and an alternative should be suggested, calls `get_alternatives(product_id)`, receives options, then generates a response offering the alternatives", "D) Claude reads a document, extracts all entities, and returns them in one pass"],
+    a: 2,
+    e: "Option C illustrates the full agentic loop: Observe (get_inventory returns 0), Think (out of stock — suggest alternatives), Act (call get_alternatives), Observe (alternatives received), Think (I have enough to respond), Act (generate final response). The loop repeats at each step until the goal is achieved."
+  },
+
+  // ─── DOMAIN 3: TOOL USE & MCP (Q25-Q39) ───
+  {
+    d: "Tool Use & MCP",
+    q: "A search tool has two variants defined: `search_knowledge_base` (description: 'searches documents') and `query_database` (description: 'queries data'). During testing, Claude frequently uses the wrong tool for knowledge base queries. What is the most effective fix?",
+    o: ["A) Rename the tools to more descriptive names", "B) Rewrite both descriptions to be specific and distinct: specify what each tool searches, what format results are returned in, and include 'when to use this tool vs the other' guidance", "C) Remove one of the two tools and consolidate them", "D) Add more parameters to each tool to force Claude to make more deliberate choices"],
+    a: 1,
+    e: "Vague descriptions like 'searches documents' and 'queries data' do not give Claude enough information to distinguish between the two. Clear, specific descriptions should explain: exactly what content each tool searches, what the output format is, and explicit guidance on when to use each one vs the other — especially when the two tools might seem interchangeable."
+  },
+  {
+    d: "Tool Use & MCP",
+    q: "A tool calls an external reporting API and receives a 503 Service Unavailable response during a known maintenance window. The maintenance window lasts 15 minutes. What is the correct implementation approach?",
+    o: ["A) Return an `isError: true` result immediately so Claude can inform the user", "B) Implement automatic retry with exponential backoff inside the tool for the duration of the maintenance window; return a structured error to Claude only if all retries are exhausted", "C) Log the error and return an empty result to avoid confusing Claude", "D) Raise an exception so the orchestration layer can handle the retry"],
+    a: 1,
+    e: "Transient errors (503, network timeouts) that are expected to resolve on their own should be handled inside the tool with automatic retry. This keeps the transient failure management detail invisible to Claude — Claude should only receive an error if the tool genuinely cannot succeed after reasonable retry attempts. Never raise exceptions from tool handlers or return empty results."
+  },
+  {
+    d: "Tool Use & MCP",
+    q: "An extraction pipeline occasionally produces invalid JSON, causing downstream processing failures. The current implementation uses a prompt instruction: 'Always return your answer as valid JSON.' What is the most reliable fix?",
+    o: ["A) Add stricter prompt instructions with more examples of valid JSON", "B) Post-process Claude's response to extract the JSON portion from surrounding text", "C) Define the extraction schema as a tool's input_schema and use tool use — this structurally constrains Claude's output to schema-compliant JSON", "D) Reduce temperature to 0 to make responses more predictable"],
+    a: 2,
+    e: "Tool use with a defined input_schema is the most reliable solution. When Claude's output is a tool call, it must conform to the schema — it cannot produce free-form text or malformed JSON. Prompt instructions (A) and post-processing (B) are workarounds that still fail unpredictably. Temperature (D) reduces variability but doesn't guarantee structural correctness."
+  },
+  {
+    d: "Tool Use & MCP",
+    q: "A `delete_workspace` tool has a `confirm: boolean` parameter. An audit shows the agent occasionally sets `confirm: true` without ever showing the user what will be deleted. What redesign eliminates this vulnerability?",
+    o: ["A) Add a prompt instruction: 'always call with confirm=false first'", "B) Remove the confirm parameter and require users to explicitly type DELETE in chat", "C) Replace with two separate tools: `preview_delete_workspace()` that returns impact details and generates a confirmation token, and `execute_delete_workspace(token)` that requires the token — making preview mandatory", "D) Add a 30-second delay before confirm=true executes"],
+    a: 2,
+    e: "A boolean `confirm` parameter can be set to `true` by the agent without completing any actual preview. Two separate tools with a confirmation token fix this structurally: the token can ONLY be obtained by completing the preview step, making preview physically mandatory. The agent cannot bypass it."
+  },
+  {
+    d: "Tool Use & MCP",
+    q: "An MCP server exposes three tools: `search_issues`, `get_issue_details`, and `create_comment`. Despite good descriptions, Claude makes 6–8 exploratory calls before finding the right issue in a large project with thousands of issues. What MCP feature would most reduce this?",
+    o: ["A) Add more parameters to search_issues to filter results more narrowly", "B) Expose an MCP Resource containing the issue catalog (titles, IDs, labels, status) — allowing Claude to read the project structure upfront and target tool calls more precisely", "C) Add a pagination parameter to search_issues to reduce result set size", "D) Create a dedicated 'find_issue' tool that combines search and retrieval"],
+    a: 1,
+    e: "MCP Resources expose data for Claude to read upfront — without tool calls. An issue catalog resource (listing all issues with titles, IDs, labels) allows Claude to understand the project structure before making tool calls, enabling targeted searches rather than exploratory multi-call investigations."
+  },
+  {
+    d: "Tool Use & MCP",
+    q: "A tool handler receives a request where the JSON-RPC structure itself is malformed — it's missing the required `jsonrpc: '2.0'` field. How should this be handled?",
+    o: ["A) Return a tool result with `isError: true` explaining the format issue", "B) Return a JSON-RPC protocol error (error code + message) — this is a structural failure at the protocol level, before any application logic is reached", "C) Attempt to infer the missing field and process the request", "D) Log the error server-side and return a generic success response"],
+    a: 1,
+    e: "A missing `jsonrpc` field is a protocol-level structural error — the request doesn't conform to the JSON-RPC specification. This should be a JSON-RPC protocol error response, not a tool result error. Tool result errors (isError: true) are for application-level failures on otherwise valid requests."
+  },
+  {
+    d: "Tool Use & MCP",
+    q: "Why are complex tool schemas with many detailed field descriptions potentially harmful to extraction accuracy for large documents?",
+    o: ["A) Tool schemas prevent Claude from processing documents over 100,000 tokens", "B) Complex tool schemas consume significant context window tokens (system prompt + schema + document); for large documents, the combined total approaches the context limit, reducing accuracy especially for document content in later sections", "C) Tool schemas force Claude to read documents in a specific order", "D) More than 10 fields in a schema causes Claude to skip optional fields"],
+    a: 1,
+    e: "Tool schemas count as context window tokens. A complex schema with 15 fields and detailed descriptions might use 3,000+ tokens. Combined with the system prompt and large documents, this reduces the effective space available for document content. As the total approaches the context limit, accuracy for content near the end of the document degrades."
+  },
+  {
+    d: "Tool Use & MCP",
+    q: "A property search tool has `property_type` as an enum: `['house', 'apartment', 'condo']`. Users frequently search for 'warehouse', 'loft', and 'studio' — all failing validation. What schema change best supports these new types while maintaining structured output?",
+    o: ["A) Change property_type to a free-form string to accept any value", "B) Add all new types to the enum immediately", "C) Add 'other' to the enum and a companion `property_type_detail` string field that captures the actual type when 'other' is selected", "D) Return null for any property type not in the current enum"],
+    a: 2,
+    e: "Adding 'other' + a detail field is the standard sustainable pattern. It captures all values without breaking validation, preserves the specific type in the detail field for analysis, and allows the team to identify which 'other' types appear most frequently to decide whether to add them to the main enum. Free-form strings (A) defeat schema type safety."
+  },
+  {
+    d: "Tool Use & MCP",
+    q: "A `send_contract` tool should present the full contract details and recipient before sending. Currently, the tool takes a single `confirmed: true` boolean. After deployment, some contracts are sent to incorrect recipients because the agent sets `confirmed: true` without actually showing the user the contract. What is the most effective architectural fix?",
+    o: ["A) Add a prompt instruction: 'present contract details to the user before setting confirmed: true'", "B) Replace the boolean with a two-step process: a preview tool that returns contract details and a cryptographic token, and an execute tool that requires that token — physically preventing execution without preview", "C) Add a logging mechanism that records all confirmations for audit", "D) Add a 10-second delay after the agent sets confirmed: true"],
+    a: 1,
+    e: "The boolean can be set to true by the agent at any time. The two-step pattern with a confirmation token fixes this structurally: the token is generated only by completing the preview, is scoped to the specific contract and recipient, and expires. Without the token, the send step cannot execute — making genuine preview mandatory."
+  },
+  {
+    d: "Tool Use & MCP",
+    q: "A `deactivate_account` tool should never be called on accounts created in the last 30 days without manager approval. This rule currently exists only in the system prompt. During an audit, you find the rule was violated 3 times. What is the most reliable fix?",
+    o: ["A) Rewrite the system prompt with stronger language about the 30-day rule", "B) Add few-shot examples demonstrating the correct escalation behaviour", "C) Implement an application-layer hook that checks the account creation date before executing deactivate_account, blocks calls on accounts under 30 days old, and triggers the approval workflow — regardless of what Claude was instructed", "D) Add a `days_since_creation` parameter to the tool so Claude can verify before calling"],
+    a: 2,
+    e: "Compliance rules must be enforced at the application layer. System prompts are not reliable enforcement mechanisms — Claude may not follow them consistently in all circumstances. An application hook that intercepts tool calls and enforces the rule programmatically is the only reliable design."
+  },
+  {
+    d: "Tool Use & MCP",
+    q: "Two tools are available: `get_document_summary(doc_id)` and `get_document_full_text(doc_id)`. Testing reveals Claude calls `get_document_full_text` even for simple questions that only need summary information. What is the most effective intervention?",
+    o: ["A) Remove `get_document_full_text` and only offer the summary tool", "B) Update tool descriptions: add 'Use this for quick lookups and topic classification' to the summary tool, and 'Use this only when full document content is required for extraction or detailed analysis' to the full text tool", "C) Merge both tools into a single tool with a `verbosity` parameter", "D) Add a routing step before tool selection to determine which tool to call"],
+    a: 1,
+    e: "Claude selects tools based on their descriptions. Adding explicit 'use when' guidance to each tool description helps Claude match the appropriate tool to the task's needs. Full text retrieval has real costs (tokens, latency) that can be avoided for simple questions — good descriptions are the primary mechanism for controlling this."
+  },
+  {
+    d: "Tool Use & MCP",
+    q: "A tool deletes a file and then updates a database record atomically (both must succeed or both must fail). The file deletion succeeds but the database update times out before confirmation. What should the tool return?",
+    o: ["A) An `isError: false` result since the file was successfully deleted", "B) An `isError: true` result with `isRetryable: true` to trigger another attempt", "C) An `isError: true` result noting the ambiguous state (file deleted, DB status unknown) and recommending against automatic retry to prevent inconsistency", "D) Roll back the file deletion and return success"],
+    a: 2,
+    e: "The database update timeout creates an ambiguous state: one part of the atomic operation succeeded (file deleted), but the other's result is unknown. Automatic retry would re-attempt the full operation including the file deletion that may already have occurred. The correct response is to surface the ambiguous state, warn against retry, and recommend manual investigation to resolve the partial operation."
+  },
+  {
+    d: "Tool Use & MCP",
+    q: "A system presents users with this confirmation before publishing a social media post: 'Ready to publish? Confirm? (yes/no)'. Users are clicking yes without reviewing — leading to posts with wrong accounts and incorrect scheduling. What change most effectively addresses this?",
+    o: ["A) Require users to type CONFIRM instead of clicking yes", "B) Add a 30-second countdown before accepting confirmation", "C) Rewrite the confirmation to show: the complete post text, the target social account and follower count, the scheduled date and time, and the platform — so users have all information needed to verify correctness before confirming", "D) Send a separate email confirmation to verify intent"],
+    a: 2,
+    e: "The root problem is that users cannot verify correctness from a vague 'Ready to publish?' prompt. A confirmation is only effective if it shows all the specific details users need to check. Including the complete post text, target account, scheduled time, and platform allows users to catch errors — wrong accounts, wrong times — before they become public."
+  },
+  {
+    d: "Tool Use & MCP",
+    q: "An MCP developer productivity tool provides code analysis. Claude consistently uses its built-in Grep tool for pattern searches instead of the MCP tool's `analyze_code_patterns()`, even though the MCP tool returns richer, structured analysis results. What is the most effective fix?",
+    o: ["A) Remove Grep from Claude Code when the MCP server is connected", "B) Expand the MCP tool's description to specify: what patterns it analyzes, that it returns structured analysis (not raw text matches), what insights it provides beyond Grep, and when to use it instead of Grep", "C) Create a system prompt instruction that prohibits using Grep when the MCP server is available", "D) Rename the MCP tool to 'enhanced_grep' so Claude recognises it as a Grep alternative"],
+    a: 1,
+    e: "Claude selects tools based on description specificity. Built-in tools like Grep have detailed, specific descriptions. If the MCP tool's description is less specific, it loses the selection competition. Expanding the MCP description to clearly differentiate it from Grep (structured analysis vs raw line matches, insights beyond pattern matching) allows Claude to make the correct selection."
+  },
+  {
+    d: "Tool Use & MCP",
+    q: "A tool call to `notify_team(team_id, message)` fails with a `403 Forbidden` error. The team ID is valid, but the API key used doesn't have notification permissions. What should the tool return?",
+    o: ["A) An `isError: true` result with `isRetryable: true` — retry with a different API key", "B) An `isError: true` result with `isRetryable: false`, `errorCategory: 'permission'`, and a description explaining that the current credentials lack notification permissions", "C) An empty result so Claude doesn't become confused by permission errors", "D) An `isError: false` result since the tool executed correctly — the API just denied it"],
+    a: 1,
+    e: "A 403 Forbidden is a permanent permission error — not a transient failure. Retrying with the same credentials will always fail. The correct response is `isError: true` + `isRetryable: false` + `errorCategory: 'permission'` + clear description. Claude can then inform the user that this action requires different credentials or elevated permissions."
+  },
+
+  // ─── DOMAIN 4: STRUCTURED OUTPUT (Q40-Q51) ───
+  {
+    d: "Structured Output & Extraction",
+    q: "An extraction schema for legal contracts includes a `governing_law` field (string). For contracts that don't specify a governing jurisdiction, the model consistently returns 'Not specified' as a string value. What is the schema improvement that makes missing data explicitly machine-readable?",
+    o: ["A) Change the field to a boolean indicating whether governing law is specified", "B) Change the type to `['string', 'null']` and add field description guidance: 'Return null if no governing law jurisdiction is stated in the contract'", "C) Remove governing_law from the schema if many contracts don't include it", "D) Add a 'governing_law_status' enum with values 'specified' and 'not_specified'"],
+    a: 1,
+    e: "Typing the field as `['string', 'null']` allows null to be a valid return value — making 'no governing law stated' machine-readable as null rather than a free-text string 'Not specified'. This is much easier for downstream systems to filter and process than checking string values for 'Not specified' variants."
+  },
+  {
+    d: "Structured Output & Extraction",
+    q: "A contract extraction system processes documents that contain both original terms and subsequent amendments. A single `notice_period` field returns either the original (30 days) or amended (45 days) value inconsistently. What redesign most reliably captures all relevant information?",
+    o: ["A) Add a prompt instruction: 'always prefer the most recently dated clause'", "B) Keep the single field but add a separate `has_amendments` boolean flag", "C) Redesign as an array of objects, each with: value, source section, effective date, and whether it is the currently active version", "D) Process original contracts and amendments as separate documents"],
+    a: 2,
+    e: "When a document legitimately contains multiple versions of the same clause (original + amendments), a single-field schema cannot represent the truth. A multi-value structure with source section, effective date, and a 'current' flag captures all versions, preserves audit trail information, and allows downstream systems to identify which version is currently in effect."
+  },
+  {
+    d: "Structured Output & Extraction",
+    q: "A product listing extraction pipeline was built with a 6-field schema. The team now wants to add a new `sustainability_rating` field (0–5 scale, not present in most listings). What is the risk level and recommended approach for this addition?",
+    o: ["A) High risk — any schema change requires re-processing all existing extractions", "B) Low risk — add as a nullable field `['number', 'null']` with instruction 'Return null if no sustainability rating is present in the listing'; existing listings without the field return null", "C) Medium risk — change the schema version number and create a migration plan", "D) High risk — adding numeric fields to extraction schemas requires validation testing before deployment"],
+    a: 1,
+    e: "Adding a new nullable field is the lowest-risk schema change. Existing documents that don't mention sustainability return null for the new field. Existing downstream processing that handles null gracefully is unaffected. The high-risk changes are adding required, non-null fields (which force non-null values from documents that don't have the data)."
+  },
+  {
+    d: "Structured Output & Extraction",
+    q: "A pipeline processes 15,000 documents per day using the Message Batches API. After the daily batch completes, 450 documents failed with `context_length_exceeded`. What is the most cost-effective and complete recovery approach?",
+    o: ["A) Resubmit all 15,000 documents with shorter prompts", "B) Accept the 3% failure rate as a known limitation", "C) Identify only the 450 failed documents from the results file, split each into smaller chunks, resubmit only those 450 as a new batch, and merge the partial results", "D) Switch all 15,000 documents to real-time API processing to avoid size limitations"],
+    a: 2,
+    e: "Resubmitting all 15,000 wastes cost re-processing 14,550 successful extractions. Accepting failures loses 3% of data. The targeted approach: identify failures → chunk → resubmit only failures → merge results. This recovers the failed documents at minimum additional cost."
+  },
+  {
+    d: "Structured Output & Extraction",
+    q: "A meeting transcript extraction system achieves 94% field accuracy on 30-minute transcripts but only 67% on 90-minute transcripts. Both lengths fit within the context window. Budget discussions in long transcripts typically begin in the first 20 minutes and are revisited in the final 10 minutes. What extraction pattern most effectively addresses this?",
+    o: ["A) Truncate transcripts at 60 minutes", "B) Process only the first 30 minutes of long transcripts", "C) Chunk the transcript into overlapping sections, extract independently from each chunk, then merge and deduplicate results — capturing information from both early and late occurrences of the same topic", "D) Increase the model's attention to later sections via prompt weighting"],
+    a: 2,
+    e: "The problem is scattered information — the budget discussion starts in minutes 1–20 and is revisited in minutes 80–90. Single-pass extraction misses late occurrences. Chunking + independent extraction + merge captures information from across the full transcript. The merge step can reconcile 'earlier proposal' vs 'final decision' from multiple chunks."
+  },
+  {
+    d: "Structured Output & Extraction",
+    q: "A medical record extraction schema uses `diagnosis_codes` as a required array of strings. For 40% of records (healthy patients), there are no diagnosis codes. Claude currently returns empty arrays `[]` for these records. A downstream system treats `[]` and `null` differently — `[]` means 'no codes found' while `null` means 'unable to process'. Which improvement most accurately signals 'no diagnosis codes present because the patient has no diagnoses'?",
+    o: ["A) Return `['NONE']` as a sentinel value for healthy patients", "B) Keep empty array `[]` — it correctly represents zero diagnosis codes", "C) Return `null` for records with no diagnoses to signal data absence", "D) Add a separate boolean field `has_diagnoses` alongside the codes array"],
+    a: 1,
+    e: "The empty array `[]` accurately represents 'zero diagnosis codes' for a healthy patient — there were no codes to extract because there are no diagnoses. This is distinct from null (which the downstream system interprets as 'unable to process'). The current behaviour is correct for healthy patients. If the downstream system needs to distinguish 'healthy patient' from 'processing failure', a separate status field would clarify this."
+  },
+  {
+    d: "Structured Output & Extraction",
+    q: "A document processing pipeline has a 48-hour SLA (results must be delivered within 48 hours of document arrival). Documents arrive continuously. The team wants to use the Batches API (up to 24-hour processing time). How frequently must batches be submitted to guarantee the SLA?",
+    o: ["A) Once per day at midnight", "B) Every 24 hours — the batch processing time equals half the SLA", "C) Every 24 hours — submit interval = SLA (48h) − batch max time (24h) = 24 hours; documents must be submitted no more than 24 hours after arrival", "D) Every 12 hours to provide a safety buffer"],
+    a: 2,
+    e: "The formula is: maximum submission delay = SLA − maximum batch processing time = 48h − 24h = 24h. To guarantee that every document is processed within 48 hours of arrival, it must be submitted to the batch no more than 24 hours after arrival. Submitting once per day at midnight (A) means documents arriving just after midnight wait 24 hours before submission, then up to 24h more for processing = 48h total — this only works if midnight is the cutoff."
+  },
+  {
+    d: "Structured Output & Extraction",
+    q: "An extraction system monitors confidence scores per field. Over 3 months, a weekly 5% random sample of high-confidence (≥0.85) extractions is reviewed. The review shows that 11% of high-confidence extractions contain errors. What does this finding most importantly indicate?",
+    o: ["A) The extraction model is fundamentally unreliable and should be replaced", "B) The 0.85 confidence threshold is not sufficiently correlated with actual accuracy; the threshold should be recalibrated upward so more extractions are routed to human review", "C) Human reviewers are introducing errors during the sampling review process", "D) The 5% sampling rate is too low to be statistically meaningful"],
+    a: 1,
+    e: "An 11% error rate among high-confidence extractions indicates that the confidence threshold (0.85) is not a reliable predictor of accuracy at this level. The threshold should be recalibrated — likely raised — so that extractions above the new threshold have a lower error rate. This is exactly what the stratified sampling process is designed to detect."
+  },
+  {
+    d: "Structured Output & Extraction",
+    q: "Why can the Message Batches API NOT be used for workflows that require iterative tool use (like agentic codebase analysis)?",
+    o: ["A) The Batches API does not support Python tool schemas", "B) The Batches API is fire-and-forget asynchronous — there is no live request-response loop during processing, making it structurally impossible for Claude to call a tool, receive a result, and continue analysis mid-request", "C) The Batches API has a 10-tool limit per request", "D) Iterative tool use is only supported on Claude 3 models"],
+    a: 1,
+    e: "The Batches API submits requests asynchronously and returns results when processing completes. There is no live connection during processing — no mechanism for Claude to call a tool, receive the result, incorporate it, and call another tool. The iterative tool-use loop requires the real-time Messages API where each tool result can be immediately returned for Claude to continue."
+  },
+  {
+    d: "Structured Output & Extraction",
+    q: "Extraction results from Chunk 1 show `penalty_rate: '2% per month'`. Chunk 2 shows `penalty_rate: '1.5% per month'` from a later amendment clause. Both chunks overlap at the amendment section. How should the merge step handle this conflict?",
+    o: ["A) Keep the Chunk 1 value — it appeared first in the document", "B) Keep the Chunk 2 value — it appeared later and may supersede the original", "C) Flag this extraction for human review, record both values with their source sections and any dates mentioned, so a human can determine which version is currently in effect", "D) Return null for penalty_rate to indicate uncertainty"],
+    a: 2,
+    e: "Conflicting values in merged chunk results are a data quality signal — they may indicate a legitimate amendment or an extraction error. The merge system should not silently discard one value. Recording both with source sections preserves all information and surfaces the conflict for human review, especially critical for contractual terms with financial implications."
+  },
+  {
+    d: "Structured Output & Extraction",
+    q: "A review extraction pipeline has `pros` as a required array of strings. For very brief reviews like 'Solid product', the model fabricates specific pros such as ['durable build', 'good value', 'fast delivery']. What schema change most effectively prevents this?",
+    o: ["A) Remove pros from required fields so Claude can skip it", "B) Add a minimum character count requirement on the review text before running extraction", "C) Change pros type from array to `['array', 'null']` and add description guidance: 'Return null (not empty array) when the review is too brief or vague to identify specific positive points from the text'", "D) Add a few-shot example of a brief review with no pros identified"],
+    a: 2,
+    e: "Typing pros as `['array', 'null']` allows null as a valid return value and the description explicitly instructs Claude to return null for vague reviews rather than fabricating specifics. This is more precise than an empty array (which could mean 'no pros stated' vs 'too vague to determine') and prevents the specific problem of fabricated plausible-sounding but unsupported specifics."
+  },
+  {
+    d: "Structured Output & Extraction",
+    q: "An automated news article analysis system achieves 99.2% field accuracy. A stratified sampling review of 3% of high-confidence extractions reveals that 2.1% still contain factual errors (correct field, wrong value). Why is this sampling still valuable despite the already high accuracy?",
+    o: ["A) 2.1% of high-confidence extractions having errors is acceptable — no action needed", "B) Sampling detects that even at 99.2% overall accuracy, high-confidence extractions still contain errors that the confidence model misses; this data enables threshold recalibration, novel failure discovery, and tracking whether accuracy improvements work over time", "C) The sample proves the system needs to be rebuilt from scratch", "D) Sampling validates that the system is production-ready"],
+    a: 1,
+    e: "Even at high overall accuracy, stratified sampling serves several irreplaceable functions: it measures the true error rate of high-confidence extractions (proving confidence ≠ correctness at 100%), it discovers novel failure modes (new document formats, edge cases the model hadn't seen), and it provides ground truth data for recalibrating confidence thresholds — all critical for maintaining quality in a production pipeline."
+  },
+
+  // ─── DOMAIN 5: CLAUDE CODE (Q52-Q60) ───
+  {
+    d: "Claude Code & Workflows",
+    q: "A security engineer asks Claude Code to find all files in a large Node.js codebase that use `eval()` — a known security risk. What is the most efficient approach?",
+    o: ["A) Read all JavaScript files from the project root", "B) Use Glob to find all *.js files, then read each to check for eval()", "C) Use Grep to search for the pattern `eval(` across all JavaScript files — returns matching lines with file paths and line numbers directly", "D) Run a Bash find command to locate files and then grep within each"],
+    a: 2,
+    e: "Grep is purpose-built for this task. It searches file contents for a pattern and returns structured results: file path, line number, and the matching line. Reading every file (A) is extremely inefficient. Glob + read (B) adds a redundant step. Bash (D) can achieve the same but Grep's structured output is more reliable and doesn't require composing shell commands."
+  },
+  {
+    d: "Claude Code & Workflows",
+    q: "A team has project-wide test conventions (always use pytest, always mock external services) that apply to all team members across all sessions. They also have an infrequently-used load testing workflow run before major releases. Where should each be documented?",
+    o: ["A) Both in the project CLAUDE.md for easy access", "B) Test conventions in the project CLAUDE.md (always-on, applies to all team members); load testing as a Skill definition invoked by slash command when needed", "C) Both as Skill definitions to keep CLAUDE.md lightweight", "D) Test conventions in user CLAUDE.md files; load testing in project CLAUDE.md"],
+    a: 1,
+    e: "CLAUDE.md is for universal, always-relevant project standards — test conventions are a perfect fit, applied in every coding session. Infrequent workflows like load testing don't need to consume context in every session — they belong as Skills, invoked with a slash command only before major releases."
+  },
+  {
+    d: "Claude Code & Workflows",
+    q: "A Claude Code session created a comprehensive analysis of a payment service over 3 hours. The developer accidentally closed the terminal without saving a summary. How can they recover the session's accumulated context?",
+    o: ["A) The session is unrecoverable — always save summaries before closing", "B) Use `claude --continue` to resume the most recently active session, which resumes from where the terminal was closed", "C) Re-run all the same queries and tool calls to rebuild the context", "D) Use `claude --session-id` with a UUID from the Anthropic dashboard"],
+    a: 1,
+    e: "`--continue` resumes the most recently active session without requiring a session name or ID. Claude Code sessions are persisted locally, so even an accidentally closed terminal can be recovered with `--continue`. The developer should then brief Claude on anything that happened after the terminal closed."
+  },
+  {
+    d: "Claude Code & Workflows",
+    q: "A developer wants Claude Code to understand how an authentication module works across a large codebase before proposing any changes. There are 200+ files in the project. What exploration approach is most efficient?",
+    o: ["A) Read all 200+ files from the project root, in alphabetical order", "B) Read only files with 'auth' in the filename using Glob", "C) Architecture-first: list top-level directories, read CLAUDE.md, use Grep to locate the main auth class definition, read that file, trace key imports, then read only the files that directly interact with authentication", "D) Ask the developer to provide the 5 most relevant auth files before starting"],
+    a: 2,
+    e: "Architecture-first exploration is the most efficient approach for an unfamiliar codebase. Start with orientation (directory structure, CLAUDE.md), then use Grep to locate the core auth class, then trace relevant imports. This narrows from 200+ files to the handful that matter without reading everything."
+  },
+  {
+    d: "Claude Code & Workflows",
+    q: "A development team uses Claude Code to generate Python functions. After generation, the developer asks the same Claude Code session to review the generated code for correctness and security issues. 6 weeks later, an audit finds a security vulnerability that the review missed. What root cause most likely contributed to this?",
+    o: ["A) Claude Code's security analysis is unreliable for Python code", "B) The review was performed in the same session that generated the code; the reviewer had full context of the generator's design intent, causing confirmation bias that led to validating design decisions rather than questioning them", "C) The function was too complex for Claude Code to review in a single session", "D) Security reviews should use a dedicated security-focused model"],
+    a: 1,
+    e: "Confirmation bias is the root cause. When the same session reviews code it generated, it has full context about why decisions were made. This causes the reviewer to evaluate code through the lens of 'does this achieve the intended design?' rather than 'is this code correct and secure independent of the intent?' An independent fresh session would see the code at face value, without the designer's perspective."
+  },
+  {
+    d: "Claude Code & Workflows",
+    q: "A developer plans to refactor a legacy billing module that is imported by 15 different services across a monorepo. Before making any changes, what Claude Code workflow is most appropriate?",
+    o: ["A) Start editing the billing module immediately and fix errors as they arise in dependent services", "B) Enter Plan Mode: use Grep to find all 15 services' import statements, read each service's usage of the billing module, document all the interfaces that must remain compatible, create a full change plan, get user approval — then execute", "C) Read the billing module, make changes, then run tests to discover which of the 15 services broke", "D) Ask a team member to provide a list of all billing module usages before starting"],
+    a: 1,
+    e: "A refactoring with 15 dependent services is exactly the scenario where Plan Mode is essential. Without upfront exploration, the developer (or Claude) might break interfaces that 15 services depend on. Plan Mode: explore all usages, understand all coupling, document the complete impact and change plan, get approval, then execute — in the right order."
+  },
+  {
+    d: "Claude Code & Workflows",
+    q: "The project's CLAUDE.md has grown to 6,000 words covering architecture, coding standards, deployment procedures, environment setup, troubleshooting guides, and API conventions. Session startup is noticeably slower and Claude occasionally misses recent instructions. What restructuring most effectively addresses this?",
+    o: ["A) Delete all CLAUDE.md content and rely on Claude's in-weights training", "B) Move all content to a wiki and provide the URL in CLAUDE.md", "C) Restructure: keep universal standards (architecture, coding conventions, API conventions) in root CLAUDE.md; move deployment and troubleshooting to Skills; use service-specific nested CLAUDE.md files for environment setup and service-specific conventions", "D) Split into two CLAUDE.md files: one for junior developers and one for seniors"],
+    a: 2,
+    e: "A 6,000-word CLAUDE.md consumes massive context in every session — including sessions where 90% of that content is irrelevant. The fix is proportional: keep only what's always relevant in root CLAUDE.md (standards, architecture), move infrequent workflows to Skills, and distribute environment/service-specific content to nested CLAUDE.md files loaded only when working in that subdirectory."
+  },
+  {
+    d: "Claude Code & Workflows",
+    q: "A junior developer's CLAUDE.md contains: 'Always use British English spellings in comments and documentation.' They work on 4 different projects daily (two have their own project CLAUDE.md files). Where should this personal preference be documented?",
+    o: ["A) In each project's CLAUDE.md so it applies on all 4 projects", "B) In the developer's user-level CLAUDE.md (~/.claude/CLAUDE.md) — it applies to all projects for that user without requiring changes to any project file", "C) In a Skill definition that sets the spelling preference when invoked", "D) As a system prompt setting in the Claude Code configuration"],
+    a: 1,
+    e: "Personal conventions that apply across ALL projects for ONE developer belong in the user-level CLAUDE.md. Adding them to each project's CLAUDE.md requires duplicating the setting across 4 projects (and maintaining them separately) and would impose the developer's personal spelling preference on all team members who clone those projects."
+  },
+  {
+    d: "Claude Code & Workflows",
+    q: "A code review system runs three sequential passes on every pull request: security analysis, code style compliance, and documentation completeness. Each pass produces structured findings using a tool use schema. The team notices that critical security findings in the final review report are often buried under 40+ style suggestions. What architecture change best addresses this?",
+    o: ["A) Run all three passes in a single prompt to improve synthesis", "B) Limit style suggestions to 5 per PR to reduce volume", "C) Ensure security findings above 'minor' severity are always prominently surfaced in the synthesis step, regardless of total volume from other passes — this may involve weighted synthesis or a dedicated critical-findings section", "D) Remove the documentation review pass to reduce report volume"],
+    a: 2,
+    e: "The synthesis step must ensure that high-severity security findings are not buried by volume from lower-severity style suggestions. Weighted synthesis (security critical findings always appear first/prominently) or a dedicated 'Critical Security Issues' section before the full review prevents important findings from being missed in a crowded report."
+  }
+];
+
+let current = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+let submitted = false;
+let timerInterval;
+let secondsLeft = TOTAL_MINUTES * 60;
+
+function startTest() {
+  document.getElementById('start-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  document.getElementById('timer-bar').style.display = 'flex';
+  document.getElementById('progress-container').style.display = 'block';
+  buildNavGrid();
+  renderQuestion();
+  startTimer();
+}
+
+function startTimer() {
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    updateTimerDisplay();
+    if (secondsLeft <= 0) {
+      clearInterval(timerInterval);
+      submitAll();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(secondsLeft / 60);
+  const s = secondsLeft % 60;
+  const el = document.getElementById('timer-display');
+  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.className = '';
+  if (secondsLeft < 300) el.classList.add('danger');
+  else if (secondsLeft < 600) el.classList.add('warning');
+}
+
+function buildNavGrid() {
+  const grid = document.getElementById('q-nav-grid');
+  grid.innerHTML = '';
+  QUESTIONS.forEach((_, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'q-nav-btn' + (i === current ? ' current' : '');
+    btn.textContent = i + 1;
+    btn.onclick = () => goTo(i);
+    grid.appendChild(btn);
+  });
+}
+
+function updateNavGrid() {
+  const btns = document.querySelectorAll('.q-nav-btn');
+  btns.forEach((btn, i) => {
+    btn.className = 'q-nav-btn';
+    if (submitted) {
+      const correct = answers[i] === QUESTIONS[i].a;
+      btn.classList.add(answers[i] !== null ? (correct ? 'graded-right' : 'graded-wrong') : '');
+    } else {
+      if (answers[i] !== null) btn.classList.add('answered');
+    }
+    if (i === current) btn.classList.add('current');
+  });
+}
+
+function updateProgress() {
+  const answered = answers.filter(a => a !== null).length;
+  const pct = Math.round((answered / QUESTIONS.length) * 100);
+  document.getElementById('progress-label').textContent = `Question ${current + 1} of ${QUESTIONS.length}`;
+  document.getElementById('progress-pct').textContent = `${answered} answered (${pct}%)`;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  const ans = answers[current];
+  const isAnswered = ans !== null;
+  const isMulti = Array.isArray(q.a);
+
+  let optionsHtml = q.o.map((opt, i) => {
+    let cls = 'option';
+    if (isAnswered) {
+      cls += ' disabled';
+      const isCorrect = Array.isArray(q.a) ? q.a.includes(i) : i === q.a;
+      const isSelected = Array.isArray(ans) ? ans.includes(i) : ans === i;
+      if (isCorrect) cls += ' correct';
+      else if (isSelected && !isCorrect) cls += ' incorrect';
+    } else if (Array.isArray(ans) ? ans.includes(i) : ans === i) {
+      cls += ' selected';
+    }
+    const letter = String.fromCharCode(65 + i);
+    return `<button class="${cls}" onclick="selectAnswer(${i})" id="opt-${i}">
+      <span class="opt-letter">${letter}</span>
+      <span class="opt-text">${opt}</span>
+    </button>`;
+  }).join('');
+
+  let expl = '';
+  if (isAnswered) {
+    const correct = Array.isArray(q.a) ? JSON.stringify(ans.sort()) === JSON.stringify([...q.a].sort()) : ans === q.a;
+    const icon = correct ? '✅' : '❌';
+    const label = correct ? 'Correct!' : 'Incorrect';
+    expl = `<div class="explanation show"><strong>${icon} ${label}</strong> — ${q.e}</div>`;
+  }
+
+  const multiTag = isMulti ? `<span class="q-multi-badge">Select all that apply</span>` : '';
+  const hasScenario = q.s ? `<div class="q-scenario">${q.s}</div>` : '';
+
+  document.getElementById('question-area').innerHTML = `
+    <div class="q-card">
+      <div class="q-meta">
+        <span class="q-num">Q${current + 1}</span>
+        <span class="q-domain">${q.d}</span>
+        ${multiTag}
+      </div>
+      <p class="q-text">${q.q}</p>
+      ${hasScenario}
+      <div class="options">${optionsHtml}</div>
+      ${expl}
+    </div>`;
+
+  document.getElementById('btn-prev').disabled = current === 0;
+  document.getElementById('btn-next').disabled = current === QUESTIONS.length - 1;
+  updateNavGrid();
+  updateProgress();
+}
+
+function selectAnswer(idx) {
+  if (submitted || answers[current] !== null) return;
+  answers[current] = idx;
+  renderQuestion();
+}
+
+function navigate(dir) {
+  const next = current + dir;
+  if (next >= 0 && next < QUESTIONS.length) {
+    current = next;
+    renderQuestion();
+  }
+}
+
+function goTo(idx) {
+  current = idx;
+  renderQuestion();
+}
+
+function submitAll() {
+  clearInterval(timerInterval);
+  submitted = true;
+
+  const correct = answers.filter((a, i) => a === QUESTIONS[i].a).length;
+  const incorrect = answers.filter((a, i) => a !== null && a !== QUESTIONS[i].a).length;
+  const skipped = answers.filter(a => a === null).length;
+  const pct = Math.round((correct / QUESTIONS.length) * 100);
+  const pass = pct >= 70;
+
+  // Domain breakdown
+  const domains = [...new Set(QUESTIONS.map(q => q.d))];
+  const domainStats = domains.map(d => {
+    const dqs = QUESTIONS.map((q, i) => ({q, i})).filter(({q}) => q.d === d);
+    const dCorrect = dqs.filter(({i}) => answers[i] === QUESTIONS[i].a).length;
+    return { d, correct: dCorrect, total: dqs.length, pct: Math.round((dCorrect / dqs.length) * 100) };
+  });
+
+  const domainColors = ['#8b5cf6','#6366f1','#3b82f6','#06b6d4','#10b981'];
+  const domainBars = domainStats.map((s, i) => `
+    <div class="domain-row">
+      <div class="domain-row-header">
+        <span>${s.d}</span>
+        <span style="color:${domainColors[i]}">${s.correct}/${s.total} — ${s.pct}%</span>
+      </div>
+      <div class="domain-bar-track">
+        <div class="domain-bar-fill" style="width:${s.pct}%; background:${domainColors[i]}"></div>
+      </div>
+    </div>`).join('');
+
+  // Missed questions
+  const missed = QUESTIONS.map((q, i) => ({q, i, ans: answers[i]}))
+    .filter(({i}) => answers[i] !== QUESTIONS[i].a);
+  const missedHtml = missed.map(({q, i, ans}) => {
+    const yourAns = ans !== null ? q.o[ans] : '(Skipped)';
+    const correctAns = q.o[q.a];
+    return `<div class="review-item">
+      <div class="review-q"><strong>Q${i+1}.</strong> ${q.q}</div>
+      <div class="review-answers">
+        <div class="review-your">✗ Your answer: ${yourAns}</div>
+        <div class="review-correct">✓ Correct: ${correctAns}</div>
+        <div class="review-explain">${q.e}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const circumference = 2 * Math.PI * 60;
+  const offset = circumference - (pct / 100) * circumference;
+
+  document.getElementById('quiz-screen').style.display = 'none';
+  const results = document.getElementById('results-screen');
+  results.style.display = 'block';
+  results.innerHTML = `
+    <div class="results-hero">
+      <div class="score-ring">
+        <svg width="160" height="160" viewBox="0 0 160 160">
+          <circle class="track" cx="80" cy="80" r="60" stroke-dasharray="${circumference}" stroke-dashoffset="0"/>
+          <circle class="fill" cx="80" cy="80" r="60" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" id="ring-fill"/>
+        </svg>
+        <div class="score-center">
+          <div class="score-pct">${pct}%</div>
+          <div class="score-label">${pass ? '✅ PASS' : '❌ FAIL'}</div>
+        </div>
+      </div>
+      <h2 class="results-title">${pass ? '🎉 Congratulations!' : '📚 Keep Studying!'}</h2>
+      <p class="results-sub">${pass ? 'You passed the mock test. Review any wrong answers below.' : 'Aim for 70% to pass. Focus on the domains with lower scores.'}</p>
+      <div class="stats-grid">
+        <div class="stat-card"><span class="stat-val stat-correct">${correct}</span><span class="stat-lbl">Correct</span></div>
+        <div class="stat-card"><span class="stat-val stat-incorrect">${incorrect}</span><span class="stat-lbl">Incorrect</span></div>
+        <div class="stat-card"><span class="stat-val stat-skipped">${skipped}</span><span class="stat-lbl">Skipped</span></div>
+        <div class="stat-card"><span class="stat-val">${QUESTIONS.length}</span><span class="stat-lbl">Total</span></div>
+      </div>
+    </div>
+
+    <div class="domain-results">
+      <h3>📊 Domain Breakdown</h3>
+      ${domainBars}
+    </div>
+
+    ${missed.length > 0 ? `
+    <div class="review-section">
+      <h3>🔍 Review Incorrect & Skipped (${missed.length} questions)</h3>
+      ${missedHtml}
+    </div>` : '<div class="review-section"><h3>🏆 Perfect Score!</h3><p style="color:var(--green);font-size:1.1rem">All questions answered correctly. Excellent preparation!</p></div>'}
+
+    <div style="text-align:center; padding: 2rem 0">
+      <button class="btn-retake" onclick="retake()">🔄 Retake Test</button>
+    </div>`;
+}
+
+function retake() {
+  answers = new Array(QUESTIONS.length).fill(null);
+  submitted = false;
+  current = 0;
+  secondsLeft = TOTAL_MINUTES * 60;
+  document.getElementById('results-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  buildNavGrid();
+  renderQuestion();
+  startTimer();
+}
+</script>
+</body>
+</html>
